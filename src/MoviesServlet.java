@@ -16,12 +16,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
+// Declaring a WebServlet called MovieServlet, which maps to url "/api/movies"
 @WebServlet(name = "MoviesServlet", urlPatterns = "/api/movies")
 public class MoviesServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which registered in web.
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -48,7 +47,7 @@ public class MoviesServlet extends HttpServlet {
             // Declare our statement
             Statement statement = conn.createStatement();
 
-            String query = "SELECT * from movies JOIN ratings ON movies.id = ratings.movie_id ORDER BY rating DESC LIMIT 20;";
+            String query = "SELECT m.id, m.title, m.year, m.director from movies AS m JOIN ratings AS r ON m.id = r.movie_id ORDER BY r.rating DESC LIMIT 20;";
 
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
@@ -58,14 +57,14 @@ public class MoviesServlet extends HttpServlet {
             // Iterate through each row of rs
             while (rs.next()) {
                 String movie_id = rs.getString("id");
-                String movie_name = rs.getString("name");
+                String movie_title = rs.getString("title");
                 String movie_year = rs.getString("year");
                 String movie_director = rs.getString("director");
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
-                jsonObject.addProperty("movie_name", movie_name);
+                jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
 
